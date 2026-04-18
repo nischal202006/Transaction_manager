@@ -9,6 +9,8 @@
 #include "Lock.h"
 #include "WaitForGraph.h"
 
+#include "../recovery/LogManager.h"
+
 class LockManager {
 public:
     LockManager();
@@ -20,14 +22,18 @@ public:
     bool hasLock(uint32_t transaction_id, uint32_t resource_id) const;
     LockType getLockType(uint32_t resource_id) const;
     
-    // TODO: Implement lock compatibility matrix
-    
 private:
     std::map<uint32_t, std::set<std::shared_ptr<Lock>>> resource_locks_;
+
     void abortTransaction(uint32_t txn_id);
+
     // Wait-for graph for deadlock detection
     WaitForGraph wait_for_graph_;
+
     bool isCompatible(LockType existing, LockType requested) const;
+
+
+    LogManager log_manager_;
 };
 
 #endif // LOCK_MANAGER_H
