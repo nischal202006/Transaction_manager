@@ -2,6 +2,7 @@
 #include <iostream>
 
 //   initialize LogManager with file
+//  FIX: initialize LogManager with file
 LockManager::LockManager()
     : log_manager_("log.txt") {}
 
@@ -83,7 +84,6 @@ bool LockManager::requestLock(uint32_t transaction_id, uint32_t resource_id, Loc
     // 🔥 NEW: log commit
     log_manager_.logCommit(transaction_id);
 
-LockManager::LockManager() {}
 
 LockManager::~LockManager() = default;
 
@@ -189,7 +189,6 @@ LockType LockManager::getLockType(uint32_t resource_id) const {
 }
 
 bool LockManager::isCompatible(LockType existing, LockType requested) const {
-    // Only SHARED + SHARED is allowed
     if (existing == LockType::SHARED && requested == LockType::SHARED) {
         return true;
     }
