@@ -76,7 +76,7 @@ bool TransactionManager::parseTransactionLine(const std::string& line,std::share
             err = "Invalid operation format: missing key";
             return false;
         }
-        out->addOperation(operation.type, operation.key);
+        out->addOperation(transaction_id,operation.type, operation.key);
     }
     
     return true;

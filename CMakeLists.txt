@@ -15,6 +15,7 @@ set(SOURCES
     src/concurrency/Lock.cpp
     src/concurrency/LockManager.cpp
     src/concurrency/WaitForGraph.cpp
+    src/concurrency/scheduler.cpp
     src/recovery/LogRecord.cpp
     src/recovery/LogManager.cpp
     src/recovery/RecoveryManager.cpp

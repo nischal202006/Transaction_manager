@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/test_transactions.dir/test_transactions.cpp.o CMakeFiles/test_transactions.dir/__/src/transaction/Transaction.cpp.o CMakeFiles/test_transactions.dir/__/src/transaction/TransactionManager.cpp.o -o test_transactions 

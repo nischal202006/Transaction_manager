@@ -1,11 +1,13 @@
 #include <iostream>
 #include <memory>
 #include <vector>
+#include <fstream>
 
 #include "transaction/TransactionManager.h"
 #include "concurrency/LockManager.h"
 #include "recovery/LogManager.h"
 #include "storage/DataStore.h"
+#include "concurrency/scheduler.h"
 
 void test_basic(TransactionManager& tm, LockManager& lm) {
     std::cout << "\n=== TEST 1: BASIC TRANSACTION ===\n";
@@ -132,17 +134,31 @@ int main() {
 
     TransactionManager tm;
     LockManager lm;
+    Scheduler scheduler;
     LogManager log_mgr("transaction.log");
     DataStore ds;
 
-    test_basic(tm, lm);
-    test_lock_conflict(lm);
-    test_shared_locks(lm);
-    test_deadlock(lm);
-    test_multiple_resources(lm);
-    test_logging(log_mgr);
-    test_transaction_parsing(tm);
-    test_invalid_parsing(tm);
+    std::ifstream file("input.txt");
+    if (!file.is_open()) {
+        std::cout << "Failed to open input file\n";
+        return 1;
+    }
+    std::string line;
+    std::vector<std::shared_ptr<Transaction>> txns;
+    while (std::getline(file, line)) {
+        std::shared_ptr<Transaction> txn;
+        std::string err;
+
+        if (tm.parseTransactionLine(line, txn, err)) {
+            txns.push_back(txn);
+        } else {
+            std::cout << "Error in the line" << std::endl;
+        }
+    }
+
+    std::vector<Operation> schedule = scheduler.createSchedule(txns);
+    scheduler.executeSchedule(schedule, ds);
+
 
     std::cout << "\n=== ALL TESTS COMPLETED ===\n";
 

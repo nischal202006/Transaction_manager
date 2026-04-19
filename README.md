@@ -1,95 +1,122 @@
 # Transaction Manager
 
-A C++ implementation of a transaction manager for understanding operating systems and database concepts.
+A C++17 educational transaction manager that demonstrates key DBMS concepts:
+transaction parsing, lock-based concurrency control, deadlock detection, write-ahead logging, recovery phases, and in-memory storage.
+
+## Overview
+
+This project simulates how transactions are interpreted and executed against shared data.
+It accepts transaction definitions from `input.txt`, creates an interleaved schedule, acquires locks per operation, detects deadlocks with a wait-for graph, logs actions, and performs reads/writes on an in-memory key-value store.
+
+## Implemented Components
+
+### Transaction Layer (`include/transaction`, `src/transaction`)
+
+- `Transaction`: Stores transaction ID, state, start time, and operation list.
+- `TransactionManager`: Handles lifecycle (`begin`, `commit`, `abort`) and parses lines such as `T1: R(x), W(y)`.
+
+### Concurrency Layer (`include/concurrency`, `src/concurrency`)
+
+- `Lock`: Represents lock ownership and lock type.
+- `LockManager`: Grants or denies lock requests based on compatibility, tracks dependencies in `WaitForGraph`, detects deadlocks, aborts conflicting transactions, and emits log entries through `LogManager`.
+- `WaitForGraph`: Directed graph with DFS cycle detection for deadlocks.
+- `Scheduler`: Builds an interleaved schedule (round-robin style) and executes operations with lock checks.
+
+### Storage Layer (`include/storage`, `src/storage`)
+
+- `DataStore`: In-memory key-value store where `read(key)` returns current value (default `0` if unseen) and `write(key)` increments value by `1`.
+- `Record`: Record abstraction included for extensibility.
+
+### Recovery & Logging Layer (`include/recovery`, `src/recovery`)
+
+- `LogRecord`: WAL record model (`BEGIN`, `UPDATE`, `COMMIT`, `ABORT`, etc.).
+- `LogManager`: Buffers log records, flushes to file, and exposes helper APIs `logBegin`, `logUpdate`, `logCommit`, `logAbort`.
+- `RecoveryManager`: Implements recovery flow with `analysis -> redo -> undo`.
+
+### Application Entry (`src/main.cpp`)
+
+- Loads transactions from `input.txt`.
+- Parses each transaction line into operations.
+- Creates and executes schedule.
+- Prints operation-by-operation runtime behavior.
+
+## Input Format
+
+Each line in `input.txt` is one transaction:
+
+```text
+T1: R(x), W(y), R(z)
+T2: W(x), R(y)
+T3: R(z), W(k)
+```
+
+`R(key)` means read, and `W(key)` means write.
+
+## Build and Run
+
+From the project root (`Transaction_manager`):
+
+```bash
+make
+make run
+```
+
+The root `Makefile` configures CMake and builds into `build_make/`.
+
+## Run Tests
+
+```bash
+cd build_make
+ctest --output-on-failure
+```
+
+Current test targets:
+
+- `test_transactions`
+- `test_deadlock`
+- `test_recovery`
+
+## Example Runtime Output
+
+Typical run output includes successful reads/writes, lock waits, and deadlock handling, for example:
+
+```text
+T1: READ x = 0
+T2: WRITE y
+...
+Transaction 1 is WAITING for txn 2
+Deadlock detected! Aborting txn 1
+```
 
 ## Project Structure
 
-```
-transaction-manager/
-├── src/
-│   ├── main.cpp                          # Main entry point
+```text
+Transaction_manager/
+├── include/
 │   ├── transaction/
-│   │   ├── Transaction.h/cpp             # Individual transaction representation
-│   │   └── TransactionManager.h/cpp      # Transaction lifecycle management
 │   ├── concurrency/
-│   │   ├── Lock.h/cpp                    # Lock representation
-│   │   ├── LockManager.h/cpp             # Lock management & allocation
-│   │   └── WaitForGraph.h/cpp            # Deadlock detection
 │   ├── recovery/
-│   │   ├── LogRecord.h/cpp               # Individual log record
-│   │   ├── LogManager.h/cpp              # Log file management
-│   │   └── RecoveryManager.h/cpp         # ARIES recovery algorithm
 │   ├── storage/
-│   │   ├── Record.h/cpp                  # Data record representation
-│   │   └── DataStore.h/cpp               # In-memory data storage
 │   └── utils/
-│       ├── enums.h                       # Enum definitions
-│       └── constants.h                   # Global constants
-├── include/                              # Header files mirror src structure
+├── src/
+│   ├── transaction/
+│   ├── concurrency/
+│   ├── recovery/
+│   ├── storage/
+│   └── main.cpp
 ├── test/
-│   ├── test_transactions.cpp             # Transaction tests
-│   ├── test_deadlock.cpp                 # Deadlock detection tests
-│   └── test_recovery.cpp                 # Recovery mechanism tests
-├── build/                                # Build output directory
-├── docs/                                 # Documentation
-├── CMakeLists.txt                        # CMake build configuration
-└── README.md                             # This file
+├── docs/
+├── CMakeLists.txt
+├── Makefile
+└── input.txt
 ```
 
-## Building the Project
+## Notes and Scope
 
-### Prerequisites
-- C++17 compatible compiler (MSVC, GCC, or Clang)
-- CMake 3.10 or higher
+- This is a learning-focused simulator, not a full production DBMS.
+- Logging and recovery interfaces are implemented and integrated, with room for deeper persistence and rollback behavior.
+- Detailed design notes are available in `docs/TRANSACTION_MANAGER.pdf`.
 
-### Build Steps
+## License
 
-```bash
-# Create build directory
-mkdir build
-cd build
-
-# Configure and build
-cmake ..
-cmake --build .
-
-# Run main application
-./transaction_manager
-
-# Run tests
-ctest
-```
-
-## Components Overview
-
-### Transaction Management (`transaction/`)
-- **Transaction**: Represents a single transaction with state tracking
-- **TransactionManager**: Manages transaction lifecycle (begin, commit, abort)
-
-### Concurrency Control (`concurrency/`)
-- **Lock**: Represents a lock on a resource
-- **LockManager**: Handles lock requests and compatibility checking
-- **WaitForGraph**: Detects deadlocks using cycle detection
-
-### Recovery (`recovery/`)
-- **LogRecord**: Represents a single database operation log entry
-- **LogManager**: Manages persistent transaction logs
-- **RecoveryManager**: Implements ARIES recovery algorithm (Analysis, Redo, Undo)
-
-### Storage (`storage/`)
-- **Record**: In-memory representation of a data record
-- **DataStore**: Simple in-memory data storage
-
-### Utilities (`utils/`)
-- **enums.h**: Transaction states, lock types, recovery states
-- **constants.h**: Global configuration parameters
-
-## Learning Goals
-
-This project covers:
-- **Transaction Processing**: ACID properties and transaction states
-- **Concurrency Control**: Locking mechanisms and deadlock detection
-- **Recovery Management**: Log-based recovery and ARIES algorithm
-- **Database Architecture**: Buffer management and storage structures
-- **Operating Systems**: Process synchronization and resource allocation
-
+This project is licensed under the MIT License. See `LICENSE`.

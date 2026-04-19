@@ -11,6 +11,7 @@
 
 
 struct Operation{
+    int TxnID;
     OperationType type;
     std::string key; // the key being accessed
 };
@@ -28,8 +29,8 @@ public:
     std::chrono::system_clock::time_point getStartTime() const;
     
     // TODO: Implement transaction-specific methods
-    void addOperation(OperationType type, const std::string& key) {
-        operations.push_back({type, key});
+    void addOperation(int TxnID,OperationType type, const std::string& key) {
+        operations.push_back({TxnID,type, key});
     }
 
     

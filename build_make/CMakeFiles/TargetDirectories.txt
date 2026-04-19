@@ -1,0 +1,10 @@
+/home/sha/Documents/Development/Transaction Manager/Transaction_manager/build_make/CMakeFiles/transaction_manager.dir
+/home/sha/Documents/Development/Transaction Manager/Transaction_manager/build_make/CMakeFiles/test.dir
+/home/sha/Documents/Development/Transaction Manager/Transaction_manager/build_make/CMakeFiles/edit_cache.dir
+/home/sha/Documents/Development/Transaction Manager/Transaction_manager/build_make/CMakeFiles/rebuild_cache.dir
+/home/sha/Documents/Development/Transaction Manager/Transaction_manager/build_make/test/CMakeFiles/test_transactions.dir
+/home/sha/Documents/Development/Transaction Manager/Transaction_manager/build_make/test/CMakeFiles/test_deadlock.dir
+/home/sha/Documents/Development/Transaction Manager/Transaction_manager/build_make/test/CMakeFiles/test_recovery.dir
+/home/sha/Documents/Development/Transaction Manager/Transaction_manager/build_make/test/CMakeFiles/test.dir
+/home/sha/Documents/Development/Transaction Manager/Transaction_manager/build_make/test/CMakeFiles/edit_cache.dir
+/home/sha/Documents/Development/Transaction Manager/Transaction_manager/build_make/test/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/test_recovery.dir/test_recovery.cpp.o CMakeFiles/test_recovery.dir/__/src/recovery/LogRecord.cpp.o CMakeFiles/test_recovery.dir/__/src/recovery/LogManager.cpp.o CMakeFiles/test_recovery.dir/__/src/recovery/RecoveryManager.cpp.o -o test_recovery 
